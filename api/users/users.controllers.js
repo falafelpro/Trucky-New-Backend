@@ -69,3 +69,19 @@ exports.updateCredentials = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateUserDetail = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const foundUser = await User.findById(req.user._id);
+    if (foundUser) {
+      const updatedUser = await foundUser.update(req.body);
+      const token = createToken(updatedUser);
+      return res.status(200).json({ token });
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};

@@ -10,7 +10,7 @@ const createToken = (user) => {
     _id: user._id,
     username: user.username,
     email: user.email,
-    phone: user.phone,
+    phoneNumber: user.phoneNumber,
     exp: Date.now() + JWT_EXPIRATION_MS,
   };
   const token = jwt.sign(payload, JWT_SECRET);
@@ -43,9 +43,7 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.signin = async (req, res, next) => {
-  console.log(req);
   const token = await createToken(req.user);
-
   res.status(200).json({ token });
   console.log({ token });
 };
@@ -58,7 +56,8 @@ exports.updateCredentials = async (req, res, next) => {
 
     const foundUser = await User.findById(req.body._id);
     if (foundUser) {
-      const updatedUser = await foundUser.update(req.body);
+      await foundUser.update(req.body);
+      const updatedUser = await User.findById(req.body._id);
       const token = createToken(updatedUser);
 
       return res.status(200).json({ token });
@@ -72,11 +71,13 @@ exports.updateCredentials = async (req, res, next) => {
 
 exports.updateUserDetail = async (req, res, next) => {
   try {
-    console.log(req.body);
+    console.log(req);
     const foundUser = await User.findById(req.user._id);
     if (foundUser) {
-      const updatedUser = await foundUser.update(req.body);
-      const token = createToken(updatedUser);
+      await foundUser.update(req.body);
+      // update dont return the newly inserted array so im calling the FindbyId again
+      // do you know other work-around
+      const token = createToken(await User.findById(req.user._id));
       return res.status(200).json({ token });
     } else {
       return res.status(404).json({ message: "User not found" });

@@ -23,7 +23,7 @@ router.put(
 
 router.put(
   "/update-user-detail",
-  passport.authenticate("local", { session: false }),
-  updateCredentials
+  passport.authenticate("jwt", { session: false }),
+  updateUserDetail
 );
 module.exports = router;

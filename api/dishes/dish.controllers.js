@@ -3,7 +3,7 @@ const Dish = require("../../db/Models/Dish");
 
 exports.FetchDishes = async (req, res, next) => {
   try {
-    const dishes = await Dish.find();
+    const dishes = await Dish.find().populate("owner", "_id");
     return res.json(dishes);
   } catch (error) {
     next(error);
@@ -45,8 +45,9 @@ exports.createDish = async (req, res, next) => {
   if (req.file) {
     req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
   }
+  console.log(req.user._id);
+  req.body.owner = { _id: req.user._id };
 
-  req.body.owner._id = req.payload.id;
   try {
     const newDish = await Dish.create(req.body);
     console.log(newDish);

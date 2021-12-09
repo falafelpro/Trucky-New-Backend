@@ -17,10 +17,7 @@ const TruckSchema = new mongoose.Schema(
         ref: "Dish",
       },
     ],
-    location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
-    },
+    location: { type: String },
   },
   { timestamps: true }
 );

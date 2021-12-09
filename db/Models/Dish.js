@@ -9,7 +9,7 @@ const DishSchema = new mongoose.Schema({
   slug: String,
   type: {
     type: String,
-    enum: ["Starter", "Main Course", "Side", "Desert", "Drink", null],
+    enum: ["starter", "main-course", "side", "desert", "drink", "", null],
   },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   description: String,

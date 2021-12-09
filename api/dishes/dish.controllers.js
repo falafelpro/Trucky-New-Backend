@@ -9,10 +9,9 @@ exports.FetchDishes = async (req, res, next) => {
     next(error);
   }
 };
-exports.fetchProfileBySlug = async (req, res, next) => {
+exports.fetchDishById = async (req, res, next) => {
   try {
-    const { slug } = req.params;
-    const foundDish = await Dish.find({ slug: slug });
+    const foundDish = await Dish.findById(req.dish._id);
     if (foundDish) {
       return res.status(200).json(foundDish);
     } else {
@@ -23,13 +22,12 @@ exports.fetchProfileBySlug = async (req, res, next) => {
   }
 };
 
-exports.UpdateDishes = async (req, res, next) => {
-  const { slug } = req.params;
+exports.UpdateDish = async (req, res, next) => {
   if (req.file) {
     req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
   }
   try {
-    const foundDish = await Dish.findOne({ slug: slug });
+    const foundDish = await Dish.findOne(req.dish);
     if (foundDish) {
       //deletes old Truck picture from assets
       if (fs.existsSync(foundDish.image)) fs.unlinkSync(foundDish.image);
@@ -60,8 +58,7 @@ exports.createDish = async (req, res, next) => {
 
 exports.deleteDish = async (req, res, next) => {
   try {
-    const { slug } = req.params;
-    const foundDish = await Dish.find({ slug: slug });
+    const foundDish = await Dish.find(req.dish);
     if (foundDish) {
       await foundDish.remove();
       res.status(204).end();

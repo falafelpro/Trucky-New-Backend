@@ -3,14 +3,14 @@ const passport = require("passport");
 const router = express.Router();
 const {
   FetchDishes,
-  fetchProfileBySlug,
-  UpdateDishes,
+  fetchDishById,
+  UpdateDish,
   deleteDish,
   createDish,
 } = require("./dish.controllers");
 
-router.param("dishSlug", async (req, res, next, dishSlug) => {
-  const dish = await fetchIngredients(dishSlug, next);
+router.param("dishId", async (req, res, next, dishId) => {
+  const dish = await fetchDishById(dishId, next);
   if (dish) {
     req.dish = dish;
     next();
@@ -18,12 +18,10 @@ router.param("dishSlug", async (req, res, next, dishSlug) => {
     next({ status: 404, message: "Dish Not Found!" });
   }
 });
-
+router.put("/:dishId", UpdateDish);
+router.delete("/:dishId", deleteDish);
 router.get("/", FetchDishes);
-router.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  ingredientCreate
-);
+router.get("/:dishId", fetchDishById);
+router.post("/", passport.authenticate("jwt", { session: false }), createDish);
 
 module.exports = router;

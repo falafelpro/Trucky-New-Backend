@@ -15,6 +15,7 @@ router.post(
   passport.authenticate("local", { session: false }),
   signin
 );
+// REVIEW: Bad naming, call it for example /users, we dont add the word update, delete to our paths
 router.put(
   "/update-credentials",
   passport.authenticate("local", { session: false }),

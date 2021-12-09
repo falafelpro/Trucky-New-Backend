@@ -71,12 +71,14 @@ exports.updateCredentials = async (req, res, next) => {
 
 exports.updateUserDetail = async (req, res, next) => {
   try {
+    // REVIEW: Remove console logs
     console.log(req);
     const foundUser = await User.findById(req.user._id);
     if (foundUser) {
       await foundUser.update(req.body);
       // update dont return the newly inserted array so im calling the FindbyId again
       // do you know other work-around
+      // REVIEW: Yes, you can use findByIdAndUpdate
       const token = createToken(await User.findById(req.user._id));
       return res.status(200).json({ token });
     } else {

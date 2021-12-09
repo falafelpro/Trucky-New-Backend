@@ -11,6 +11,7 @@ exports.FetchDishes = async (req, res, next) => {
 };
 exports.fetchProfileBySlug = async (req, res, next) => {
   try {
+    // REVIEW: You're already using the route param middleware, you dont need the find dish
     const { slug } = req.params;
     const foundDish = await Dish.find({ slug: slug });
     if (foundDish) {

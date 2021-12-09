@@ -9,6 +9,7 @@ const DishSchema = new mongoose.Schema({
   slug: String,
   type: {
     type: String,
+    // REVIEW: What's the null for?
     enum: ["Starter", "Main Course", "Side", "Desert", "Drink", null],
   },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

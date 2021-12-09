@@ -9,6 +9,7 @@ const {
   createDish,
 } = require("./dish.controllers");
 
+// REVIEW: We dont use slugs for the backend, use ID
 router.param("dishSlug", async (req, res, next, dishSlug) => {
   const dish = await fetchIngredients(dishSlug, next);
   if (dish) {
@@ -25,5 +26,5 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   ingredientCreate
 );
-
+// REVIEW: Your routes are missing
 module.exports = router;

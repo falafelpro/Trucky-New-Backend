@@ -8,6 +8,7 @@ const TruckSchema = new mongoose.Schema(
     image: String,
     specialty: {
       type: String,
+      // REVIEW: Dont add null, add "Other"
       enum: ["Burger", "Coffee", "Mexican", "Indian", "", null],
     },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

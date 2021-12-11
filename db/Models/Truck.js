@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseSlugPlugin = require("mongoose-slug-plugin");
 const TruckSchema = new mongoose.Schema(
   {
     name: {
@@ -6,6 +7,9 @@ const TruckSchema = new mongoose.Schema(
       required: true,
     },
     image: String,
+
+    slug: String,
+
     specialty: {
       type: String,
       enum: ["Burger", "Coffee", "Mexican", "Indian", "", null],
@@ -17,8 +21,13 @@ const TruckSchema = new mongoose.Schema(
         ref: "Dish",
       },
     ],
-    location: { type: String },
+
+    location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+    },
   },
   { timestamps: true }
 );
+TruckSchema.plugin(mongooseSlugPlugin, { tmpl: "<%=name%>" });
 module.exports = mongoose.model("Truck", TruckSchema);

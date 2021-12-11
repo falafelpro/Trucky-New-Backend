@@ -3,7 +3,7 @@ const Dish = require("../../db/Models/Dish");
 
 exports.FetchDishes = async (req, res, next) => {
   try {
-    const dishes = await Dish.find().populate("owner", "_id");
+    const dishes = await Dish.find();
     return res.json(dishes);
   } catch (error) {
     next(error);
@@ -36,22 +36,6 @@ exports.UpdateDish = async (req, res, next) => {
     } else {
       return res.status(404).json({ message: "Dish not found" });
     }
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.createDish = async (req, res, next) => {
-  if (req.file) {
-    req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
-  }
-  console.log(req.user._id);
-  req.body.owner = { _id: req.user._id };
-
-  try {
-    const newDish = await Dish.create(req.body);
-    console.log(newDish);
-    return res.status(200).json(newDish);
   } catch (error) {
     next(error);
   }

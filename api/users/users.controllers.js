@@ -25,12 +25,16 @@ exports.signup = async (req, res, next) => {
     const newUser = await User.create(req.body);
     // create an empty truck for registered owners
     if (req.body.role === "owner") {
-      await Truck.create({
+      const newTruck = await Truck.create({
         owner: newUser._id,
         name: `${newUser.username} Truck`,
         image: "",
         dishes: [],
         speciality: "",
+      });
+      await newTruck.populate({
+        path: "owner",
+        select: "username",
       });
     }
 

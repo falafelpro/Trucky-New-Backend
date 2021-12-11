@@ -1,12 +1,13 @@
 const express = require("express");
 const passport = require("passport");
+const upload = require("../../middleware/multer");
 const router = express.Router();
+
 const {
   FetchDishes,
   fetchDishById,
   UpdateDish,
   deleteDish,
-  createDish,
 } = require("./dish.controllers");
 
 router.param("dishId", async (req, res, next, dishId) => {
@@ -22,6 +23,5 @@ router.put("/:dishId", UpdateDish);
 router.delete("/:dishId", deleteDish);
 router.get("/", FetchDishes);
 router.get("/:dishId", fetchDishById);
-router.post("/", passport.authenticate("jwt", { session: false }), createDish);
 
 module.exports = router;

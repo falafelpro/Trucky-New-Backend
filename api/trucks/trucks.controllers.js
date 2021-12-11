@@ -1,6 +1,16 @@
 const Truck = require("../../db/Models/Truck");
 const normalize = require("normalize-path");
 const fs = require("fs");
+const Dish = require("../../db/Models/Dish");
+
+exports.fetchTruck = async (truckId, next) => {
+  try {
+    const truck = await Truck.findById(truckId);
+    return truck;
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.truckListFetch = async (req, res, next) => {
   try {
@@ -25,6 +35,29 @@ exports.updateTruck = async (req, res, next) => {
     } else {
       return res.status(404).json({ message: "Truck not found" });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+exports.createDish = async (req, res, next) => {
+  try {
+    if (!req.user._id.equals(req.truck.owner._id)) {
+      return next({
+        status: 401,
+        message: "You're not the truck owner!!!",
+      });
+    }
+
+    if (req.file) {
+      req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
+    }
+    req.body.truck = req.params.truckId;
+    console.log(req.body);
+    const newDish = await Dish.create(req.body);
+    await Truck.findByIdAndUpdate(req.truck, {
+      $push: { dishes: newDish },
+    });
+    return res.status(201).json(newDish);
   } catch (error) {
     next(error);
   }

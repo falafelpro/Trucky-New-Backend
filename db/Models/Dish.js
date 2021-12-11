@@ -5,17 +5,17 @@ const DishSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: String,
-  slug: String,
+  image: { type: String },
+  slug: { type: String },
   type: {
     type: String,
     enum: ["starter", "main-course", "side", "desert", "drink", "", null],
   },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  description: String,
+  description: { type: String },
   price: {
     type: Number,
   },
+  truck: { type: mongoose.Schema.Types.ObjectId, ref: "Truck" },
 });
 DishSchema.plugin(mongooseSlugPlugin, { tmpl: "<%=name%>" });
 module.exports = mongoose.model("Dish", DishSchema);

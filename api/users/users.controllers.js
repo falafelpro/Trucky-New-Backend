@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, JWT_EXPIRATION_MS } = require("../../config/keys");
 const Truck = require("../../db/Models/Truck");
+const { findOne } = require("../../db/Models/Truck");
 
 const createToken = (user) => {
   const payload = {
@@ -13,6 +14,7 @@ const createToken = (user) => {
     phoneNumber: user.phoneNumber,
     exp: Date.now() + JWT_EXPIRATION_MS,
   };
+  if (user.truck) payload.truck = user.truck;
   const token = jwt.sign(payload, JWT_SECRET);
   return token;
 };
@@ -47,7 +49,14 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.signin = async (req, res, next) => {
+  const foundTruck = await Truck.findOne({ owner: req.user });
+  if (foundTruck) req.user.truck = foundTruck;
+
+  console.log(foundTruck);
+
   const token = await createToken(req.user);
+
+  console.log(token);
   res.status(200).json({ token });
   console.log({ token });
 };

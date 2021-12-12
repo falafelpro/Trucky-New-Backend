@@ -41,23 +41,24 @@ exports.updateTruck = async (req, res, next) => {
 };
 exports.createDish = async (req, res, next) => {
   try {
-    if (!req.user._id.equals(req.truck.owner._id)) {
-      return next({
-        status: 401,
-        message: "You're not the truck owner!!!",
-      });
-    }
-
     if (req.file) {
       req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
     }
     req.body.truck = req.params.truckId;
-    console.log(req.body);
     const newDish = await Dish.create(req.body);
     await Truck.findByIdAndUpdate(req.truck, {
       $push: { dishes: newDish },
     });
     return res.status(201).json(newDish);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.FetchTruckDishes = async (req, res, next) => {
+  try {
+    const dishes = await Dish.find({ truck: req.params.truckId });
+    return res.json(dishes);
   } catch (error) {
     next(error);
   }

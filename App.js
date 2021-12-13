@@ -9,6 +9,8 @@ const passport = require("passport");
 const userRoutes = require("./api/users/users.routes");
 const truckRoutes = require("./api/trucks/trucks.routes");
 const menuRoutes = require("./api/dishes/dish.routes");
+const customerRoutes = require("./api/customer/customer.routes");
+
 const { localStrategy, jwtStrategy } = require("./middleware/passport");
 
 const app = express();
@@ -29,6 +31,7 @@ app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.use("/api", userRoutes);
 app.use("/api/trucks", truckRoutes);
+app.use("/api/customer", customerRoutes);
 app.use("/api/menu", menuRoutes);
 
 app.use((req, res, next) =>

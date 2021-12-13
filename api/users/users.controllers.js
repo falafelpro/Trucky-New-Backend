@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET, JWT_EXPIRATION_MS } = require("../../config/keys");
 const Truck = require("../../db/Models/Truck");
 const { findOne } = require("../../db/Models/Truck");
+const Customer = require("../../db/Models/Customer");
 
 const createToken = (user) => {
   const payload = {
@@ -34,10 +35,24 @@ exports.signup = async (req, res, next) => {
         dishes: [],
         speciality: "",
       });
-      await newTruck.populate({
+    }
+    // create an empty profile for registered customers
+    if (req.body.role === "customer") {
+      const newCustomer = await Customer.create({
+        owner: newUser._id,
+        firstName: newUser.username,
+        lastName: "",
+        avatar:
+          "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
+        headerImage: "",
+        FavoriteTrucks: [],
+        // _id: newUser._id,
+      });
+      await newCustomer.populate({
         path: "owner",
         select: "username",
       });
+      console.log(newCustomer);
     }
 
     const token = createToken(newUser);
@@ -52,13 +67,9 @@ exports.signin = async (req, res, next) => {
   const foundTruck = await Truck.findOne({ owner: req.user });
   if (foundTruck) req.user.truck = foundTruck;
 
-  console.log(foundTruck);
-
   const token = await createToken(req.user);
 
-  console.log(token);
   res.status(200).json({ token });
-  console.log({ token });
 };
 
 exports.updateCredentials = async (req, res, next) => {

@@ -12,11 +12,7 @@ const CustomerSchema = new mongoose.Schema(
 
     headerImage: String,
 
-    favoriteTrucks: [
-      {
-        type: String,
-      },
-    ],
+    favoriteTrucks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Truck" }],
 
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },

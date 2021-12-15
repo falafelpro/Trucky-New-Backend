@@ -3,11 +3,9 @@ const User = require("../../db/models/User");
 
 exports.fetchCustomer = async (req, res, next) => {
   try {
-    console.log(req.user._id);
-
-    const foundCustomer = await Customer.findOne({ owner: req.user._id });
-
-    console.log(foundCustomer);
+    const foundCustomer = await Customer.findOne({
+      owner: req.user._id,
+    }).populate("favoriteTrucks");
 
     if (foundCustomer) {
       return res.status(200).json(foundCustomer);
@@ -31,7 +29,7 @@ exports.fetchCustomer = async (req, res, next) => {
 exports.customerUpdate = async (req, res, next) => {
   try {
     if (req.file) {
-      req.body.image = `/${req.file.path}`;
+      req.body.avatar = `/${req.file.path}`;
     }
     const customer = await Customer.findOneAndUpdate(
       { owner: req.user._id },
@@ -39,7 +37,23 @@ exports.customerUpdate = async (req, res, next) => {
 
       { new: true, runValidators: true } // returns the updated product
     );
+
     return res.status(200).json(customer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.favTruckRemove = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const favTruck = await Customer.findOneAndUpdate(
+      { owner: req.user._id },
+      { $push: { favoriteTrucks: { _id: req.body } } },
+      { new: true }
+    );
+
+    return res.status(204).json(favTruck);
   } catch (error) {
     next(error);
   }

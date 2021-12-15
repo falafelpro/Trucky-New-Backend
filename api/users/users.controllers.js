@@ -52,7 +52,6 @@ exports.signup = async (req, res, next) => {
         path: "owner",
         select: "username",
       });
-      console.log(newCustomer);
     }
 
     const token = createToken(newUser);
@@ -95,7 +94,6 @@ exports.updateCredentials = async (req, res, next) => {
 
 exports.updateUserDetail = async (req, res, next) => {
   try {
-    console.log(req);
     const foundUser = await User.findById(req.user._id);
     if (foundUser) {
       await foundUser.update(req.body);

@@ -7,6 +7,7 @@ const {
   fetchCustomerById,
   customerUpdate,
   fetchCustomer,
+  favTruckRemove,
 } = require("./customer.controllers");
 
 const router = express.Router();
@@ -29,8 +30,14 @@ router.get(
 router.put(
   "/",
   passport.authenticate("jwt", { session: false }),
-  upload.single("image"),
+  upload.single("avatar"),
   customerUpdate
+);
+
+router.put(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  favTruckRemove
 );
 
 module.exports = router;

@@ -19,7 +19,13 @@ router.param("dishId", async (req, res, next, dishId) => {
     next({ status: 404, message: "Dish Not Found!" });
   }
 });
-router.put("/:dishId", UpdateDish);
+router.put(
+  "/:dishId",
+  passport.authenticate("jwt", { session: false }),
+  //here a middleware that checks user truck ownership
+  upload.single("image"),
+  UpdateDish
+);
 router.delete("/:dishId", deleteDish);
 router.get("/", FetchDishes);
 router.get("/:dishId", fetchDishById);

@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 const mongooseSlugPlugin = require("mongoose-slug-plugin");
+// const LocationSchema = mongoose.Schema({
+//   lat: mongoose.Decimal128,
+//   lng: mongoose.Decimal128,
+// });
+
 const TruckSchema = new mongoose.Schema(
   {
     name: {
@@ -21,10 +26,8 @@ const TruckSchema = new mongoose.Schema(
         ref: "Dish",
       },
     ],
-
     location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
+      type: Object,
     },
   },
   { timestamps: true }

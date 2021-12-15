@@ -23,15 +23,13 @@ exports.UpdateDish = async (req, res, next) => {
     req.body.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
   }
   try {
-    const foundDish = req.dish;
-    if (foundDish) {
-      //deletes old Truck picture from assets
-      if (fs.existsSync(foundDish.image)) fs.unlinkSync(foundDish.image);
-      await foundDish.update(req.body);
-      return res.status(204).end();
-    } else {
-      return res.status(404).json({ message: "Dish not found" });
-    }
+    console.log(req.body);
+    //deletes old Truck picture from assets
+    if (fs.existsSync(req.dish.image)) fs.unlinkSync(req.dish.image);
+    const newUpdatedDish = await Dish.findByIdAndUpdate(req.dish, req.body, {
+      new: true,
+    });
+    return res.status(200).json(newUpdatedDish);
   } catch (error) {
     next(error);
   }

@@ -25,7 +25,13 @@ router.param("truckId", async (req, res, next, truckId) => {
 });
 
 router.get("/", truckListFetch);
-router.put("/", updateTruck);
+router.put(
+  "/:truckId",
+  passport.authenticate("jwt", { session: false }),
+  isTruckOwner,
+  upload.single("image"),
+  updateTruck
+);
 router.post(
   "/:truckId/dishes",
   passport.authenticate("jwt", { session: false }),

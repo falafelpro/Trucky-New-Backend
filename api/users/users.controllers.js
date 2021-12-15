@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, JWT_EXPIRATION_MS } = require("../../config/keys");
 const Truck = require("../../db/Models/Truck");
-const { findOne } = require("../../db/Models/Truck");
 const Customer = require("../../db/Models/Customer");
+
 
 const createToken = (user) => {
   const payload = {
@@ -64,8 +64,12 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.signin = async (req, res, next) => {
-  const foundTruck = await Truck.findOne({ owner: req.user });
+  const foundTruck = await Truck.find({ owner: req.user._id });
   if (foundTruck) req.user.truck = foundTruck;
+  else{
+    res.status(404).json({
+      error: "Oops Upside Your Head! for some reason you dont own a truck",
+    })};
 
   const token = await createToken(req.user);
 
@@ -99,8 +103,6 @@ exports.updateUserDetail = async (req, res, next) => {
     const foundUser = await User.findById(req.user._id);
     if (foundUser) {
       await foundUser.update(req.body);
-      // update dont return the newly inserted array so im calling the FindbyId again
-      // do you know other work-around
       const token = createToken(await User.findById(req.user._id));
       return res.status(200).json({ token });
     } else {
